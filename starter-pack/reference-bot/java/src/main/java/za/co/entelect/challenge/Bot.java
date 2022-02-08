@@ -46,7 +46,7 @@ public class Bot {
         if(myCar.damage == 5) {
             return FIX;
         }
-        //Accelerate first if going to slow
+        //Accelerate first if going too slow
         if(myCar.speed <= 3) {
             return ACCELERATE;
         }
