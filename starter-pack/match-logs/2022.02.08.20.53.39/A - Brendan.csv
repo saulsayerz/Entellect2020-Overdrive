@@ -1,0 +1,14 @@
+Round,PlayerId,Position:Y,Position:X,Speed,State,Boosting,Boost-Counter,Damage,#Boosts,#Oil,#Lizards,LastCyberTruck:Y,LastCyberTruck:X,#Tweets,#EMPs,Score
+1,1,1,1,5,READY,false,0,0,0,0,0,,,0,0,0
+2,1,1,7,6,ACCELERATING,false,0,0,0,0,0,,,0,0,0
+3,1,1,15,6,HIT_MUD,false,0,1,0,0,0,,,0,0,-3
+4,1,2,20,6,TURNING_RIGHT,false,0,1,0,0,0,,,0,0,-3
+5,1,2,28,8,ACCELERATING,false,0,1,0,0,1,,,0,0,1
+6,1,2,37,9,ACCELERATING,false,0,1,0,0,1,,,0,1,5
+7,1,2,46,9,NOTHING,false,0,1,0,0,1,,,1,1,9
+8,1,1,54,9,TURNING_LEFT,false,0,1,0,0,2,,,1,1,13
+9,1,1,63,9,NOTHING,false,0,1,0,0,2,,,1,1,13
+10,1,1,72,9,NOTHING,false,0,1,0,0,2,,,1,1,13
+11,1,1,81,9,NOTHING,false,0,1,0,0,2,,,1,2,17
+12,1,1,90,9,NOTHING,false,0,1,0,0,2,,,1,2,17
+13,1,1,99,9,NOTHING,false,0,1,0,0,2,,,1,3,21
