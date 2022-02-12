@@ -8,6 +8,7 @@ import za.co.entelect.challenge.enums.Terrain;
 import java.util.*;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 import java.security.SecureRandom;
 
@@ -186,7 +187,7 @@ public class Bot {
         }
 
         // blocks contain mud
-        if (blocks.subList(0,myCar.speed).contains(Terrain.MUD)) { // ini udah diatasin mudnya dalam jangkauan speed apa ga
+        if (blocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.MUD)) { // ini udah diatasin mudnya dalam jangkauan speed apa ga
             // LIZARD USE = priority 1
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 return LIZARD;
@@ -196,7 +197,7 @@ public class Bot {
             boolean kiriaman = true; // dua variabel ini ngecek sebelah kiri atau kanannya jg ada obstacles apa ga
             boolean kananaman = true;
             if (lanepos == 1){ //kasus dia di paling atas, hanya mungkin turn right
-                if (rBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || rBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || rBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTRight){
+                if (rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.MUD) || rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.OIL_SPILL) || rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.WALL) || isCTRight){
                     kananaman = false;
                 }
                 if (kananaman){
@@ -204,7 +205,7 @@ public class Bot {
                 }
             }
             if (lanepos == 4){ //kasus dia di paling bawah, hanya mungkin turn left
-                if (lBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTLeft){
+                if (lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.MUD) || lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.WALL) || isCTLeft){
                     kiriaman = false;
                 }
                 if (kiriaman){
@@ -212,10 +213,10 @@ public class Bot {
                 }
             }
             if (lanepos == 2 || lanepos==3){ // ini bisa ke kiri bisa ke kanan
-                if (rBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || rBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || rBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTRight){
+                if (rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.MUD) || rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.OIL_SPILL) || rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.WALL) || isCTRight){
                     kananaman = false;
                 }
-                if (lBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTLeft){
+                if (lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.MUD) || lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.WALL) || isCTLeft){
                     kiriaman = false;
                 }
                 if (kiriaman && !kananaman){
@@ -227,10 +228,10 @@ public class Bot {
                 if (kananaman && kiriaman){ // cek mana yang ada powernya
                     boolean kiriadapower = false;
                     boolean kananadapower = false;
-                    if (rBlocks.subList(0,myCar.speed).contains(Terrain.OIL_POWER)||rBlocks.subList(0,myCar.speed).contains(Terrain.LIZARD)||rBlocks.subList(0,myCar.speed).contains(Terrain.EMP)||rBlocks.subList(0,myCar.speed).contains(Terrain.BOOST)||rBlocks.subList(0,myCar.speed).contains(Terrain.TWEET)){
+                    if (rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.OIL_POWER)||rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.LIZARD)||rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.EMP)||rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.BOOST)||rBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.TWEET)){
                         kananadapower = true;
                     }
-                    if (lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_POWER)||lBlocks.subList(0,myCar.speed).contains(Terrain.LIZARD)||lBlocks.subList(0,myCar.speed).contains(Terrain.EMP)||lBlocks.subList(0,myCar.speed).contains(Terrain.BOOST)||lBlocks.subList(0,myCar.speed).contains(Terrain.TWEET)){
+                    if (lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.OIL_POWER)||lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.LIZARD)||lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.EMP)||lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.BOOST)||lBlocks.subList(0,min(blocks.size(),myCar.speed)).contains(Terrain.TWEET)){
                         kiriadapower = true;
                     }
                     if(kiriadapower && !kananadapower){
