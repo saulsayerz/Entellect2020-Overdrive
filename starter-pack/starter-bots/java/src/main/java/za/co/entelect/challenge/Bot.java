@@ -62,7 +62,7 @@ public class Bot {
         boolean isCTRight = false;
         Lane Lane ;
         for (int i =0 ; i < myCar.speed ; i++) { 
-            Lane = gameState.lanes.get(lanepos-1)[myCar.position.block-1 + i];
+            Lane = gameState.lanes.get(lanepos-1)[7 + i];
             if (Lane == null || Lane.terrain == Terrain.FINISH) {
                 break;
             }
@@ -73,7 +73,7 @@ public class Bot {
 
         if (lanepos > 1) {
             for (int i =0 ; i < myCar.speed ; i++) { 
-                Lane = gameState.lanes.get(lanepos-2)[myCar.position.block-1 + i];
+                Lane = gameState.lanes.get(lanepos-2)[7 + i];
                 if (Lane == null || Lane.terrain == Terrain.FINISH) {
                     break;
                 }
@@ -85,7 +85,7 @@ public class Bot {
 
         if (lanepos < 4) {
             for (int i =0 ; i < myCar.speed ; i++) { 
-                Lane = gameState.lanes.get(lanepos)[myCar.position.block-1 + i];
+                Lane = gameState.lanes.get(lanepos)[7 + i];
                 if (Lane == null || Lane.terrain == Terrain.FINISH) {
                     break;
                 }
