@@ -56,6 +56,45 @@ public class Bot {
         List<Object> lBlocks = getBlocksInFront(llane, myCar.position.block, gameState);
         List<Object> nextBlocks = blocks.subList(0, 1);
 
+        //INI BAGIAN UNTUK NGECEK ADA CYBERTRUCK APA ENGGA 
+        /*boolean isCT = false;
+        boolean isCTLeft = false;
+        boolean isCTRight = false;
+        Lane Lane ;
+        for (int i =0 ; i < myCar.speed ; i++) { 
+            Lane = gameState.lanes.get(lanepos-1)[myCar.position.block-1 + i];
+            if (Lane == null || Lane.terrain == Terrain.FINISH) {
+                break;
+            }
+            if (Lane.cyberTruck){
+                isCT = true;
+            }
+        } 
+
+        if (lanepos > 1) {
+            for (int i =0 ; i < myCar.speed ; i++) { 
+                Lane = gameState.lanes.get(lanepos-2)[myCar.position.block-1 + i];
+                if (Lane == null || Lane.terrain == Terrain.FINISH) {
+                    break;
+                }
+                if (Lane.cyberTruck){
+                    isCTLeft = true;
+                }
+            } 
+        }
+
+        if (lanepos < 4) {
+            for (int i =0 ; i < myCar.speed ; i++) { 
+                Lane = gameState.lanes.get(lanepos)[myCar.position.block-1 + i];
+                if (Lane == null || Lane.terrain == Terrain.FINISH) {
+                    break;
+                }
+                if (Lane.cyberTruck){
+                    isCTRight = true;
+                }
+            } 
+        }*/
+
         // Implement fix logic
         if (myCar.damage > 2) {
             if (myCar.position.block - opponent.position.block > 2 * (opponent.speed)) {
@@ -72,6 +111,11 @@ public class Bot {
         if (myCar.speed <= 3) {
             return ACCELERATE;
         }
+
+        /*Command TWEET = new TweetCommand(opponent.position.lane, opponent.position.block + opponent.speed + 1);
+        if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
+            return TWEET;
+        }*/
 
         // Basic avoidance logic
         // WALL , MUD, OIL
