@@ -202,6 +202,7 @@ public class Bot {
                 if (kananaman){
                     return TURN_RIGHT;
                 }
+            }
             if (lanepos == 4){ //kasus dia di paling bawah, hanya mungkin turn left
                 if (lBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTLeft){
                     kiriaman = false;
