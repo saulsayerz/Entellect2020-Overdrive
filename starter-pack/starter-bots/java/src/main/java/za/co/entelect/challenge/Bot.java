@@ -57,7 +57,7 @@ public class Bot {
         List<Object> nextBlocks = blocks.subList(0, 1);
 
         //INI BAGIAN UNTUK NGECEK ADA CYBERTRUCK APA ENGGA 
-        /*boolean isCT = false;
+        boolean isCT = false;
         boolean isCTLeft = false;
         boolean isCTRight = false;
         Lane Lane ;
@@ -93,7 +93,7 @@ public class Bot {
                     isCTRight = true;
                 }
             } 
-        }*/
+        }
 
         // Implement fix logic
         if (myCar.damage > 2) {
@@ -171,8 +171,8 @@ public class Bot {
         // }
         // }
 
-        // blocks contains mud
-        if (blocks.contains(Terrain.MUD)) {
+        // blocks contains oil
+        if (blocks.contains(Terrain.OIL_SPILL)) {
             // LIZARD USE = priority 1
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 return LIZARD;
@@ -185,17 +185,68 @@ public class Bot {
             }
         }
 
-        // blocks contains oil
-        if (blocks.contains(Terrain.OIL_SPILL)) {
+        // blocks contain mud
+        if (blocks.subList(0,myCar.speed).contains(Terrain.MUD)) { // ini udah diatasin mudnya dalam jangkauan speed apa ga
             // LIZARD USE = priority 1
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 return LIZARD;
             }
 
-            // pindah2 lane
-            if (nextBlocks.contains(Terrain.MUD) || nextBlocks.contains(Terrain.WALL)) {
-                int i = random.nextInt(directionList.size());
-                return directionList.get(i);
+            // pindah2 lane. Kalau misal lane sebelah ada obstacles, mending nubruk mud aja / dibiarin soalnya dah paling ringan ya ga
+            boolean kiriaman = true; // dua variabel ini ngecek sebelah kiri atau kanannya jg ada obstacles apa ga
+            boolean kananaman = true;
+            if (lanepos == 1){ //kasus dia di paling atas, hanya mungkin turn right
+                if (rBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || rBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || rBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTRight){
+                    kananaman = false;
+                }
+                if (kananaman){
+                    return TURN_RIGHT;
+                }
+            if (lanepos == 4){ //kasus dia di paling bawah, hanya mungkin turn left
+                if (lBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTLeft){
+                    kiriaman = false;
+                }
+                if (kiriaman){
+                    return TURN_LEFT;
+                }
+            }
+            if (lanepos == 2 || lanepos==3){ // ini bisa ke kiri bisa ke kanan
+                if (rBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || rBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || rBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTRight){
+                    kananaman = false;
+                }
+                if (lBlocks.subList(0,myCar.speed).contains(Terrain.MUD) || lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_SPILL) || lBlocks.subList(0,myCar.speed).contains(Terrain.WALL) || isCTLeft){
+                    kiriaman = false;
+                }
+                if (kiriaman && !kananaman){
+                    return TURN_LEFT;
+                }
+                if (!kiriaman && kananaman){
+                    return TURN_RIGHT;
+                }
+                if (kananaman && kiriaman){ // cek mana yang ada powernya
+                    boolean kiriadapower = false;
+                    boolean kananadapower = false;
+                    if (rBlocks.subList(0,myCar.speed).contains(Terrain.OIL_POWER)||rBlocks.subList(0,myCar.speed).contains(Terrain.LIZARD)||rBlocks.subList(0,myCar.speed).contains(Terrain.EMP)||rBlocks.subList(0,myCar.speed).contains(Terrain.BOOST)||rBlocks.subList(0,myCar.speed).contains(Terrain.TWEET)){
+                        kananadapower = true;
+                    }
+                    if (lBlocks.subList(0,myCar.speed).contains(Terrain.OIL_POWER)||lBlocks.subList(0,myCar.speed).contains(Terrain.LIZARD)||lBlocks.subList(0,myCar.speed).contains(Terrain.EMP)||lBlocks.subList(0,myCar.speed).contains(Terrain.BOOST)||lBlocks.subList(0,myCar.speed).contains(Terrain.TWEET)){
+                        kiriadapower = true;
+                    }
+                    if(kiriadapower && !kananadapower){
+                        return TURN_LEFT;
+                    }
+                    if(!kiriadapower && kananadapower){
+                        return TURN_RIGHT;
+                    }
+                    if(kiriadapower && kananadapower){ //KASUS GINI aku asumsi ambil lane yang bukan pojok aja, soalnya di pojokan itu membatasi gerak. Kalau di tegnah kan enak bisa kiri/kanan
+                        if(lanepos ==2){
+                            return TURN_RIGHT;
+                        }
+                        if(lanepos==3){
+                            return TURN_LEFT;
+                        }
+                    }
+                }
             }
         }
 
