@@ -62,7 +62,6 @@ public class Bot {
         boolean isCTLeft = false;
         boolean isCTRight = false;
         Lane Lane ;
-        Lane = gameState.lanes.get(lanepos-1)[26];
         for (int i =0 ; i < myCar.speed ; i++) { 
             Lane = gameState.lanes.get(lanepos-1)[6 + i];
             if (Lane == null || Lane.terrain == Terrain.FINISH) {
