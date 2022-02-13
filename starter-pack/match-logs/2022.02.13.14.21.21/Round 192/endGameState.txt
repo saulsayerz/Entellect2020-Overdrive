@@ -1,0 +1,6 @@
+Match seed: 3425
+
+The winner is: A - s4Rap
+
+A - s4Rap - score:363 health:0
+B - anca - score:285 health:0

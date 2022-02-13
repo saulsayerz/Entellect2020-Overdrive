@@ -1,0 +1,6 @@
+Match seed: 3233
+
+The winner is: B - aco-bot
+
+A - s4Rap - score:-7 health:0
+B - aco-bot - score:271 health:0

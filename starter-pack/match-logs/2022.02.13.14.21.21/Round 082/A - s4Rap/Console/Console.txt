@@ -1,0 +1,10 @@
+======================================================================================================
+round:82
+player: id:1 position: y:2 x:627 speed:8 state:HIT_MUD statesThatOccurredThisRound:ACCELERATING, HIT_MUD boosting:false boost-counter:0 damage:1 score:172 powerups: LIZARD:2, EMP:8, TWEET:1
+opponent: id:2 position: y:2 x:531 speed:3
+
+[#░░░░▓░░░░*░░░░░░░░░▓░░░░░]
+[░░░░T1░░░░░░░░∱░░░░░░░░░░░]
+[░░░░░*░░░░░░░░░░░░░░░░▓»▓░]
+[░░░░░▓░░░░#░░░░░░░░∱░░▓▓░░]
+======================================================================================================

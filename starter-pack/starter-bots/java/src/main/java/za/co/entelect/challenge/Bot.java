@@ -109,7 +109,7 @@ public class Bot {
 
         // Accelerate first if going too slow
         // nanti ganti lagi
-        if (myCar.speed <= 6) {
+        if (myCar.speed <= 5) {
             return ACCELERATE;
         }
 
@@ -170,7 +170,7 @@ public class Bot {
                 }
 
                 // check if the wall is in the range of car speed
-                if (blocks.subList(0, myCar.speed-1).contains(Terrain.WALL)) {
+                if (blocks.subList(0, min(blocks.size(),myCar.speed)).contains(Terrain.WALL)) {
                     // CEK KANAN KIRI
                 }
 

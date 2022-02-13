@@ -1,0 +1,6 @@
+Match seed: 4127
+
+The winner is: A - s4Rap
+
+A - s4Rap - score:434 health:0
+B - JnCK-bot - score:159 health:0

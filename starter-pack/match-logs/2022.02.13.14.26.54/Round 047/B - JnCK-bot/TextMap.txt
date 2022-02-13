@@ -1,0 +1,10 @@
+======================================================================================================
+round:47
+player: id:2 position: y:3 x:257 speed:6 state:DECELERATING statesThatOccurredThisRound:DECELERATING boosting:false boost-counter:0 damage:2 score:3 powerups: OIL:1, LIZARD:1
+opponent: id:1 position: y:3 x:385 speed:9
+
+[T░░░░░▓░░░░░░░░░T░░░░░░▓░░]
+[░░░░░∱░░░░░░░░░░░░░░░░Φ░░▓]
+[░░░░░2▓░T░Φ░░░░▓░░░░░░░░░░]
+[░░░░#░▓░░»░░░░░∱░░░░░ΦT»░*]
+======================================================================================================
