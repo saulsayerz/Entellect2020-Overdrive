@@ -144,18 +144,12 @@ public class Bot {
 
         // Implement fix logic
         if (myCar.damage >= 2) {
-            // if (myCar.position.block - opponent.position.block > 2 * (opponent.speed)) {
-            // return FIX;
-            // }
-
-            if (myCar.damage >= 2) {
-                return FIX;
-            }
+            return FIX;
         }
 
         // Accelerate first if going too slow
         // nanti ganti lagi
-        if (myCar.speed <= 5) {
+        if (myCar.speed <= 6) {
             return ACCELERATE;
         }
 
@@ -176,20 +170,20 @@ public class Bot {
             }
             // Kasus 2
             if (lanepos == 2 || lanepos == 3) {
-                int LeftBen = countPowerUpLeft - countObstacleLeft ;
-                int RightBen = countPowerUpRight - countObstacleRight ;
+                int LeftBen = countPowerUpLeft - countObstacleLeft;
+                int RightBen = countPowerUpRight - countObstacleRight;
                 // Kasus 2.1 Ada wall di kanan kiri
-                if (rBlocks.contains(Terrain.WALL) && lBlocks.contains(Terrain.WALL)){
+                if (rBlocks.contains(Terrain.WALL) && lBlocks.contains(Terrain.WALL)) {
                     if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                         return LIZARD;
-                    } else if (RightBen >= LeftBen){
+                    } else if (RightBen >= LeftBen) {
                         return TURN_RIGHT;
                     } else {
                         return TURN_LEFT;
                     }
                 }
                 // Kasus 2.1 Cek kanan ada wall atau ga
-                if (rBlocks.contains(Terrain.WALL)){
+                if (rBlocks.contains(Terrain.WALL)) {
                     if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                         return LIZARD;
                     } else {
@@ -197,15 +191,15 @@ public class Bot {
                     }
                 }
                 // Kasus 2.3 Cek kiri ada wall atau ga
-                if (lBlocks.contains(Terrain.WALL)){
+                if (lBlocks.contains(Terrain.WALL)) {
                     if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                         return LIZARD;
                     } else {
                         return TURN_RIGHT;
                     }
                 }
-                if (!rBlocks.contains(Terrain.WALL) && !lBlocks.contains(Terrain.WALL)){
-                    if (LeftBen >= RightBen){
+                if (!rBlocks.contains(Terrain.WALL) && !lBlocks.contains(Terrain.WALL)) {
+                    if (LeftBen >= RightBen) {
                         return TURN_LEFT;
                     } else {
                         return TURN_RIGHT;
@@ -228,7 +222,7 @@ public class Bot {
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                 return LIZARD;
             }
-            
+
             if (myCar.position.lane == 1) {
                 /************* 1. NO WALL AND CT ON RIGHT LANE ***************/
                 if (!rBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL) && !isCTRight) {
@@ -251,8 +245,7 @@ public class Bot {
                         } // Lebih menguntungkan di lane tengah
                         else if (countPowerUp > countPowerUpRight) {
                             return ACCELERATE;
-                        } 
-                        else {
+                        } else {
                             return TURN_RIGHT;
                         }
                     }
@@ -779,7 +772,8 @@ public class Bot {
         } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
             return BOOST;
         } else if (hasPowerUp(PowerUps.EMP, myCar.powerups)
-                && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1)
+                && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1
+                        || opponent.position.lane == lanepos - 1)
                 && opponent.position.block > myCar.position.block
                 && opponent.position.block < myCar.position.block + 20) {
             return EMP;
