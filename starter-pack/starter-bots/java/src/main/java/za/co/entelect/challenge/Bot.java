@@ -121,7 +121,7 @@ public class Bot {
 
         // Basic avoidance logic
         // CT, WALL , OIL, MUD
-        
+
         if (blocks.contains(Terrain.WALL)) {
             // check if the wall in the speed range
             if (blocks.size() <= myCar.speed) {
@@ -208,12 +208,17 @@ public class Bot {
                             return TURN_RIGHT;
                         }
                     }
+                    // Kasus 1.3 : Tidak ada obstacle di kanan
+                    if (!adaMud && !adaOil && !adaWall && !isCTRight){
+                        return TURN_RIGHT;
+                    }
                 }
             } 
             // Kasus 2 : Lane 2
             else if (lanepos == 2){
-                // Kasus 2.1 Ada CT di kanan
-                if (isCTRight){
+                // Kasus 2.1 Ada CT/Wall di kanan
+                if (isCTRight || rBlocks.contains(Terrain.WALL)){
+                    // Cek kiri
                     if (lBlocks.contains(Terrain.MUD) || lBlocks.contains(Terrain.WALL) || lBlocks.contains(Terrain.OIL_SPILL) || isCTLeft ){
                         boolean adaMud = lBlocks.contains(Terrain.MUD);
                         boolean adaWall = lBlocks.contains(Terrain.WALL);
@@ -235,24 +240,25 @@ public class Bot {
                         // Kasus 2.1.2 : Jalur kiri ada mud tapi gaada oil
                         if (adaMud && !adaOil){
                             // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
-                            if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
-                                return TURN_RIGHT;
+                            if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                                return TURN_LEFT;
                             } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
                                 return ACCELERATE;
                             } else {
-                                return TURN_RIGHT;
+                                return TURN_LEFT;
                             }
                         }
                     }
                 } 
-                // Kasus 2.2 Ada CT di kiri
-                if (isCTLeft){
+                // Kasus 2.2 Ada CT/wall di kiri
+                if (isCTLeft || lBlocks.contains(Terrain.WALL)){
+                    // Cek kanan
                     if (rBlocks.contains(Terrain.MUD) || rBlocks.contains(Terrain.WALL) || rBlocks.contains(Terrain.OIL_SPILL) || isCTRight ){
                         boolean adaMud = rBlocks.contains(Terrain.MUD);
                         boolean adaWall = rBlocks.contains(Terrain.WALL);
                         boolean adaOil = rBlocks.contains(Terrain.OIL_SPILL);
                         
-                        // Kasus 1.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
+                        // Kasus 2.2.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
                         if (adaWall || isCTRight){
                             // Menggunakan powerup apabila punya
                             if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
@@ -265,7 +271,7 @@ public class Bot {
                                 return OIL;
                             }
                         } 
-                        // Kasus 1.2 : Jalur kanan ada mud tapi gaada oil
+                        // Kasus 2.2.2 : Jalur kanan ada mud tapi gaada oil
                         if (adaMud && !adaOil){
                             // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
                             if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
@@ -278,26 +284,434 @@ public class Bot {
                         }
                     }
                 }
-                // Kasus 2.3 Ada wall di kanan
-                if (rBlocks.contains(Terrain.WALL)){
-
+                // Kasus 2.3 Ada mud di kanan
+                if (rBlocks.contains(Terrain.MUD)){
+                    // Kasus 2.3.1 Kiri ada CT/Wall
+                    if (isCTLeft || lBlocks.contains(Terrain.WALL)){
+                        // Cek kanan karena gamungkin belok kiri
+                        if (rBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = rBlocks.contains(Terrain.MUD);
+                            boolean adaWall = rBlocks.contains(Terrain.WALL);
+                            boolean adaOil = rBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 2.3.1.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTRight){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 2.3.1.2 : Jalur kanan ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                                    return TURN_RIGHT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_RIGHT;
+                                }
+                            }
+                        }
+                    }
+                    // Kasus 2.3.2 Kanan ada CT / Wall
+                    if (isCTRight || lBlocks.contains(Terrain.WALL)){
+                        // Cek kiri karena gamungkin belok kanan
+                        if (lBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = lBlocks.contains(Terrain.MUD);
+                            boolean adaWall = lBlocks.contains(Terrain.WALL);
+                            boolean adaOil = lBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 2.3.2.1 : Jalur kiri ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTLeft){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 2.3.2.2 : Jalur kiri ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                                    return TURN_LEFT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_LEFT;
+                                }
+                            }
+                        }
+                    }
                 }
-                // Kasus 2.4 Ada wall di kiri
-                if (lBlocks.contains(Terrain.WALL)){
-
+                // Kasus 2.4 Ada mud di kiri
+                if (lBlocks.contains(Terrain.MUD)){
+                    // Kasus 2.4.1 Kanan ada CT/Wall
+                    if (isCTRight || lBlocks.contains(Terrain.WALL)){
+                        // Cek kiri karena gamungkin belok kanan
+                        if (lBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = lBlocks.contains(Terrain.MUD);
+                            boolean adaWall = lBlocks.contains(Terrain.WALL);
+                            boolean adaOil = lBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 2.4.1.1 : Jalur kiri ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTLeft){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 2.4.1.2 : Jalur kiri ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                                    return TURN_LEFT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_LEFT;
+                                }
+                            }
+                        }
+                    }
+                    // Kasus 2.4.2 Kiri ada CT/Wall
+                    if (isCTLeft || lBlocks.contains(Terrain.WALL)){
+                        // Cek kanan karena gamungkin belok kiri
+                        if (rBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = rBlocks.contains(Terrain.MUD);
+                            boolean adaWall = rBlocks.contains(Terrain.WALL);
+                            boolean adaOil = rBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 2.4.2.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTRight){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 2.4.2.2 : Jalur kanan ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                                    return TURN_RIGHT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_RIGHT;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Kasus 2.5 Kanan / kiri aman
+                boolean kananaman = !rBlocks.contains(Terrain.MUD) && !rBlocks.contains(Terrain.WALL) && !rBlocks.contains(Terrain.OIL_SPILL) && !isCTRight ;
+                boolean kiriaman = !lBlocks.contains(Terrain.MUD) && !lBlocks.contains(Terrain.WALL) && !lBlocks.contains(Terrain.OIL_SPILL) && !isCTLeft ;
+                if (kananaman && !kiriaman){
+                    return TURN_RIGHT;
+                } else if (kiriaman && !kananaman){
+                    return TURN_LEFT;
+                } else if (kananaman && kiriaman){
+                    if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                        return TURN_RIGHT;
+                    }
+                    if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                        return TURN_LEFT;
+                    }
+                    if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                        return ACCELERATE;
+                    }
                 }
             }
             // Kasus 3 : Lane 3
             else if (lanepos == 3){
-
+                // Kasus 3.1 Ada CT/wall di kiri
+                if (isCTLeft || lBlocks.contains(Terrain.WALL)){
+                    // Cek kanan
+                    if (rBlocks.contains(Terrain.MUD) || rBlocks.contains(Terrain.WALL) || rBlocks.contains(Terrain.OIL_SPILL) || isCTRight ){
+                        boolean adaMud = rBlocks.contains(Terrain.MUD);
+                        boolean adaWall = rBlocks.contains(Terrain.WALL);
+                        boolean adaOil = rBlocks.contains(Terrain.OIL_SPILL);
+                        
+                        // Kasus 3.1.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
+                        if (adaWall || isCTRight){
+                            // Menggunakan powerup apabila punya
+                            if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                return EMP;
+                            } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                return TWEET;
+                            } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                return BOOST;
+                            } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                return OIL;
+                            }
+                        } 
+                        // Kasus 3.1.2 : Jalur kanan ada mud tapi gaada oil
+                        if (adaMud && !adaOil){
+                            // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                            if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                                return TURN_RIGHT;
+                            } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                return ACCELERATE;
+                            } else {
+                                return TURN_RIGHT;
+                            }
+                        }
+                    }
+                }
+                // Kasus 3.2 Ada CT/Wall di kanan
+                if (isCTRight || rBlocks.contains(Terrain.WALL)){
+                    // Cek kiri
+                    if (lBlocks.contains(Terrain.MUD) || lBlocks.contains(Terrain.WALL) || lBlocks.contains(Terrain.OIL_SPILL) || isCTLeft ){
+                        boolean adaMud = lBlocks.contains(Terrain.MUD);
+                        boolean adaWall = lBlocks.contains(Terrain.WALL);
+                        boolean adaOil = lBlocks.contains(Terrain.OIL_SPILL);
+                        
+                        // Kasus 3.2.1 : Jalur kiri ada wall / cybertruck, mending stay di lane
+                        if (adaWall || isCTLeft){
+                            // Menggunakan powerup apabila punya
+                            if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                return EMP;
+                            } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                return TWEET;
+                            } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                return BOOST;
+                            } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                return OIL;
+                            }
+                        } 
+                        // Kasus 3.2.2 : Jalur kiri ada mud tapi gaada oil
+                        if (adaMud && !adaOil){
+                            // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                            if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                                return TURN_LEFT;
+                            } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                return ACCELERATE;
+                            } else {
+                                return TURN_LEFT;
+                            }
+                        }
+                    }
+                } 
+                // Kasus 3.3 Ada mud di kiri
+                if (lBlocks.contains(Terrain.MUD)){
+                    // Kasus 3.3.1 Kanan ada CT/Wall
+                    if (isCTRight || lBlocks.contains(Terrain.WALL)){
+                        // Cek kiri karena gamungkin belok kanan
+                        if (lBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = lBlocks.contains(Terrain.MUD);
+                            boolean adaWall = lBlocks.contains(Terrain.WALL);
+                            boolean adaOil = lBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 3.3.1.1 : Jalur kiri ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTLeft){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 3.3.1.2 : Jalur kiri ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                                    return TURN_LEFT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_LEFT;
+                                }
+                            }
+                        }
+                    }
+                    // Kasus 3.3.2 Kiri ada CT/Wall
+                    if (isCTLeft || lBlocks.contains(Terrain.WALL)){
+                        // Cek kanan karena gamungkin belok kiri
+                        if (rBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = rBlocks.contains(Terrain.MUD);
+                            boolean adaWall = rBlocks.contains(Terrain.WALL);
+                            boolean adaOil = rBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 3.3.2.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTRight){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 3.3.2.2 : Jalur kanan ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                                    return TURN_RIGHT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_RIGHT;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Kasus 3.4 Ada mud di kanan
+                if (rBlocks.contains(Terrain.MUD)){
+                    // Kasus 3.4.1 Kiri ada CT/Wall
+                    if (isCTLeft || lBlocks.contains(Terrain.WALL)){
+                        // Cek kanan karena gamungkin belok kiri
+                        if (rBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = rBlocks.contains(Terrain.MUD);
+                            boolean adaWall = rBlocks.contains(Terrain.WALL);
+                            boolean adaOil = rBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 3.4.1.1 : Jalur kanan ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTRight){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 3.4.1.2 : Jalur kanan ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                                    return TURN_RIGHT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_RIGHT;
+                                }
+                            }
+                        }
+                    }
+                    // Kasus 3.4.2 Kanan ada CT / Wall
+                    if (isCTRight || lBlocks.contains(Terrain.WALL)){
+                        // Cek kiri karena gamungkin belok kanan
+                        if (lBlocks.contains(Terrain.MUD)){
+                            boolean adaMud = lBlocks.contains(Terrain.MUD);
+                            boolean adaWall = lBlocks.contains(Terrain.WALL);
+                            boolean adaOil = lBlocks.contains(Terrain.OIL_SPILL);
+                            
+                            // Kasus 3.4.2.1 : Jalur kiri ada wall / cybertruck, mending stay di lane
+                            if (adaWall || isCTLeft){
+                                // Menggunakan powerup apabila punya
+                                if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 || opponent.position.lane == lanepos - 1) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                                    return EMP;
+                                } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                                    return TWEET;
+                                } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                                    return BOOST;
+                                } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                                    return OIL;
+                                }
+                            } 
+                            // Kasus 3.4.2.2 : Jalur kiri ada mud tapi gaada oil
+                            if (adaMud && !adaOil){
+                                // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                                if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                                    return TURN_LEFT;
+                                } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                                    return ACCELERATE;
+                                } else {
+                                    return TURN_LEFT;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Kasus 3.5 Kanan / kiri aman
+                boolean kananaman = !rBlocks.contains(Terrain.MUD) && !rBlocks.contains(Terrain.WALL) && !rBlocks.contains(Terrain.OIL_SPILL) && !isCTRight ;
+                boolean kiriaman = !lBlocks.contains(Terrain.MUD) && !lBlocks.contains(Terrain.WALL) && !lBlocks.contains(Terrain.OIL_SPILL) && !isCTLeft ;
+                if (kiriaman && !kananaman){
+                    return TURN_LEFT;
+                } else if (kananaman && !kiriaman){
+                    return TURN_RIGHT;
+                } else if (kananaman && kiriaman){
+                    if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                        return TURN_LEFT;
+                    }
+                    if (rBlocks.contains(Terrain.LIZARD) || rBlocks.contains(Terrain.OIL_POWER) || rBlocks.contains(Terrain.TWEET) || rBlocks.contains(Terrain.EMP) || rBlocks.contains(Terrain.BOOST)){
+                        return TURN_RIGHT;
+                    }
+                    if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                        return ACCELERATE;
+                    }
+                }
             }
-            // Kasus 3 : Lane paling kanan, hanya bisa belok kiri
+            // Kasus 4 : Lane paling kanan, hanya bisa belok kiri
             else {
-
-            }
-            if (nextBlocks.contains(Terrain.MUD) || nextBlocks.contains(Terrain.WALL)) {
-                int i = random.nextInt(directionList.size());
-                return directionList.get(i);
+                if (lBlocks.contains(Terrain.MUD) || lBlocks.contains(Terrain.WALL) || lBlocks.contains(Terrain.OIL_SPILL) || isCTLeft ){
+                    boolean adaMud = lBlocks.contains(Terrain.MUD);
+                    boolean adaWall = lBlocks.contains(Terrain.WALL);
+                    boolean adaOil = lBlocks.contains(Terrain.OIL_SPILL);
+                    
+                    // Kasus 4.1 : Jalur kiri ada wall / cybertruck, mending stay di lane
+                    if (adaWall || isCTLeft){
+                        // Menggunakan powerup apabila punya
+                        if (hasPowerUp(PowerUps.EMP, myCar.powerups) && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1 ) && opponent.position.block > myCar.position.block && opponent.position.block < myCar.position.block + 20 ){
+                            return EMP;
+                        } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)){
+                            return TWEET;
+                        } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+                            return BOOST;
+                        } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)){
+                            return OIL;
+                        }
+                    } 
+                    // Kasus 4.2 : Jalur kiri ada mud tapi gaada oil
+                    if (adaMud && !adaOil){
+                        // Prioritas jalur yang lebih menguntungkan (ada powerup karena skor jadi balik)
+                        if (lBlocks.contains(Terrain.LIZARD) || lBlocks.contains(Terrain.OIL_POWER) || lBlocks.contains(Terrain.TWEET) || lBlocks.contains(Terrain.EMP) || lBlocks.contains(Terrain.BOOST)){
+                            return TURN_LEFT;
+                        } else if (blocks.contains(Terrain.LIZARD) || blocks.contains(Terrain.OIL_POWER) || blocks.contains(Terrain.TWEET) || blocks.contains(Terrain.EMP) || blocks.contains(Terrain.BOOST)){
+                            return ACCELERATE;
+                        } else {
+                            return TURN_LEFT;
+                        }
+                    }
+                    // Kasus 4.3 : Tidak ada obstacle di kiri
+                    if (!adaMud && !adaOil && !adaWall && !isCTLeft){
+                        return TURN_LEFT;
+                    }
+                }
             }
         }
 
