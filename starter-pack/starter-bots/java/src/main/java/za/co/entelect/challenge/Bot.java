@@ -593,9 +593,7 @@ public class Bot {
         // Jalur aman BISA ATAU TIDAK PERLU MENGHINDARI OBST
 
         // Menggunakan powerup
-        if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
-            return LIZARD;
-        } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
                 && !(blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) ||
                         blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.OIL_SPILL) ||
                         blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.MUD))) {
@@ -603,8 +601,7 @@ public class Bot {
         } else if (hasPowerUp(PowerUps.EMP, myCar.powerups)
                 && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1
                         || opponent.position.lane == lanepos - 1)
-                && opponent.position.block > myCar.position.block
-                && opponent.position.block < myCar.position.block + 20) {
+                && opponent.position.block > myCar.position.block) {
             return EMP;
         } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
             return TWEET;
@@ -624,18 +621,14 @@ public class Bot {
                     return TURN_RIGHT;
                 }
             }
-        } else if ((lanepos == 2 || lanepos == 3) && countObstacle == 0 && countObstacleLeft == 0
-                && countObstacleRight == 0) {
-            if (countPowerUpLeft > countPowerUp) {
-                if (countPowerUpLeft > countPowerUpRight) {
-                    return TURN_LEFT;
-                } else if (countPowerUpLeft < countPowerUpRight) {
-                    return TURN_RIGHT;
-                }
-            } else if (countPowerUpLeft < countPowerUp) {
-                if (countPowerUpRight > countPowerUp) {
-                    return TURN_RIGHT;
-                }
+        } else if ((lanepos == 2) && countObstacle == 0 && countObstacleRight == 0) {
+            if (countPowerUpRight > countPowerUp) {
+                return TURN_RIGHT;
+            }
+            
+        } else if (lanepos == 3 && countObstacle == 0 && countObstacleLeft == 0){
+            if (countPowerUpLeft > countPowerUp){
+                return TURN_LEFT;
             }
         } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
             if (countObstacleLeft == countObstacle) {
