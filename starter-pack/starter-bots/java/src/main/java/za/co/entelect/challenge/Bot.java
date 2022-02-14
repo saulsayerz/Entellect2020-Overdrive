@@ -611,46 +611,48 @@ public class Bot {
         }
 
         // Cek jalur
-        if (lanepos == 1) {
-            if (countObstacleRight == 0 && countObstacle == 0) {
-                if (countPowerUpRight > countPowerUp) {
-                    return TURN_RIGHT;
+        if (myCar.speed != 0) {
+            if (lanepos == 1) {
+                if (countObstacleRight == 0 && countObstacle == 0) {
+                    if (countPowerUpRight > countPowerUp) {
+                        return TURN_RIGHT;
+                    }
                 }
-            }
-            if (countObstacleRight == countObstacle && countObstacle != 0 && myCar.speed != 0) {
-                if (RightBen >= SelfBen) {
-                    return TURN_RIGHT;
+                if (countObstacleRight == countObstacle && countObstacle != 0) {
+                    if (RightBen >= SelfBen) {
+                        return TURN_RIGHT;
+                    }
                 }
-            }
-        } else if (lanepos == 2) {
-            if (countObstacle == 0 && countObstacleRight == 0) {
-                if (countPowerUpRight > countPowerUp) {
-                    return TURN_RIGHT;
+            } else if (lanepos == 2) {
+                if (countObstacle == 0 && countObstacleRight == 0) {
+                    if (countPowerUpRight > countPowerUp) {
+                        return TURN_RIGHT;
+                    }
+                } else {
+                    if (LeftBen > SelfBen) {
+                        return TURN_RIGHT;
+                    }
                 }
-            } else {
-                if (LeftBen > SelfBen) {
-                    return TURN_RIGHT;
+            } else if (lanepos == 3) {
+                if (countObstacle == 0 && countObstacleLeft == 0) {
+                    if (countPowerUpLeft > countPowerUp) {
+                        return TURN_LEFT;
+                    }
+                } else {
+                    if (RightBen > SelfBen) {
+                        return TURN_LEFT;
+                    }
                 }
-            }
-        } else if (lanepos == 3) {
-            if (countObstacle == 0 && countObstacleLeft == 0) {
-                if (countPowerUpLeft > countPowerUp) {
-                    return TURN_LEFT;
+            } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
+                if (countObstacleLeft == 0 && countObstacle == 0) {
+                    if (countPowerUpLeft > countPowerUp) {
+                        return TURN_LEFT;
+                    }
                 }
-            } else {
-                if (RightBen > SelfBen) {
-                    return TURN_LEFT;
-                }
-            }
-        } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
-            if (countObstacleLeft == 0 && countObstacle == 0) {
-                if (countPowerUpLeft > countPowerUp) {
-                    return TURN_LEFT;
-                }
-            }
-            if (countObstacleLeft == countObstacle && countObstacle != 0 && myCar.speed != 0) {
-                if (LeftBen >= SelfBen) {
-                    return TURN_LEFT;
+                if (countObstacleLeft == countObstacle && countObstacle != 0) {
+                    if (LeftBen >= SelfBen) {
+                        return TURN_LEFT;
+                    }
                 }
             }
         }
