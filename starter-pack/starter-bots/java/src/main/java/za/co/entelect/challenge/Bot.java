@@ -365,11 +365,9 @@ public class Bot {
                     }
                 }
                 // Kasus 2.4 Ada mud di kiri
-                if (lBlocks.subList(0, min(blocks.size(),
-                        myCar.speed + 1)).contains(Terrain.MUD)) {
+                if (lBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.MUD)) {
                     // Kasus 2.4.1 Kanan ada CT/Wall
-                    if (isCTRight || rBlocks.subList(0, min(blocks.size(),
-                            myCar.speed + 1)).contains(Terrain.WALL)) {
+                    if (isCTRight || rBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)) {
                         // Cek kiri karena gamungkin belok kanan
                         if (LeftBen > SelfBen) {
                             return TURN_LEFT;
@@ -624,13 +622,20 @@ public class Bot {
                     return TURN_RIGHT;
                 }
             }
-        } else if ((lanepos == 2) && countObstacle == 0 && countObstacleRight == 0) {
-            if (countPowerUpRight > countPowerUp) {
+        } else if (lanepos == 2) {
+            if (countObstacle == 0 && countObstacleRight == 0) {
+                if (countPowerUpRight > countPowerUp) {
+                    return TURN_RIGHT;
+                }
+            }
+            if (LeftBen > SelfBen) {
                 return TURN_RIGHT;
             }
-
         } else if (lanepos == 3 && countObstacle == 0 && countObstacleLeft == 0) {
             if (countPowerUpLeft > countPowerUp) {
+                return TURN_LEFT;
+            }
+            if (RightBen > SelfBen) {
                 return TURN_LEFT;
             }
         } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
