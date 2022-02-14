@@ -152,9 +152,12 @@ public class Bot {
             }
         }
 
-        if (isCT) countObstacle +=2;
-        if (isCTLeft) countObstacleLeft += 2;
-        if (isCTRight) countObstacleRight += 2;
+        if (isCT)
+            countObstacle += 2;
+        if (isCTLeft)
+            countObstacleLeft += 2;
+        if (isCTRight)
+            countObstacleRight += 2;
 
         // Hitung benefit dari tiap lane
         int LeftBen = countPowerUpLeft - countObstacleLeft;
@@ -178,7 +181,7 @@ public class Bot {
         // CT, WALL , OIL, MUD
 
         // Kena CT -> berubah jadi speed_state_1, kena damage 2, stuck dibelakang CT
-        if (isCT && blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)) {
+        if (isCT) {
             // Kasus 1
             if (lanepos == 1) {
                 if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
@@ -611,13 +614,13 @@ public class Bot {
 
         // Cek jalur
         if (lanepos == 1) {
-            if (countObstacleRight == countObstacle) {
-                if (RightBen >= SelfBen) {
+            if (countObstacleRight == 0 && countObstacle == 0) {
+                if (countPowerUpRight > countPowerUp) {
                     return TURN_RIGHT;
                 }
             }
-            if (countObstacleRight == 0 && countObstacle == 0) {
-                if (countPowerUpRight > countPowerUp) {
+            if (countObstacleRight == countObstacle) {
+                if (RightBen >= SelfBen) {
                     return TURN_RIGHT;
                 }
             }
@@ -625,19 +628,19 @@ public class Bot {
             if (countPowerUpRight > countPowerUp) {
                 return TURN_RIGHT;
             }
-            
-        } else if (lanepos == 3 && countObstacle == 0 && countObstacleLeft == 0){
-            if (countPowerUpLeft > countPowerUp){
+
+        } else if (lanepos == 3 && countObstacle == 0 && countObstacleLeft == 0) {
+            if (countPowerUpLeft > countPowerUp) {
                 return TURN_LEFT;
             }
         } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
-            if (countObstacleLeft == countObstacle) {
-                if (LeftBen >= SelfBen) {
+            if (countObstacleLeft == 0 && countObstacle == 0) {
+                if (countPowerUpLeft > countPowerUp) {
                     return TURN_LEFT;
                 }
             }
-            if (countObstacleLeft == 0 && countObstacle == 0) {
-                if (countPowerUpLeft > countPowerUp) {
+            if (countObstacleLeft == countObstacle) {
+                if (LeftBen >= SelfBen) {
                     return TURN_LEFT;
                 }
             }
