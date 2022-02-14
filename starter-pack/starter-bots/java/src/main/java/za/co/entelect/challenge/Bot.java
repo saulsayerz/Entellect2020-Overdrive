@@ -61,7 +61,7 @@ public class Bot {
         int countPowerUp = 0;
         int countPowerUpLeft = 0;
         int countPowerUpRight = 0;
-        for (int i = 0; i < min(blocks.size(), myCar.speed); i++) {
+        for (int i = 0; i <= min(blocks.size(), myCar.speed); i++) {
             if (blocks.get(i) == Terrain.BOOST ||
                     blocks.get(i) == Terrain.EMP ||
                     blocks.get(i) == Terrain.OIL_POWER ||
@@ -128,7 +128,7 @@ public class Bot {
         int countObstacle = 0;
         int countObstacleLeft = 0;
         int countObstacleRight = 0;
-        for (int i = 0; i < min(blocks.size(), myCar.speed); i++) {
+        for (int i = 0; i <= min(blocks.size(), myCar.speed); i++) {
             if (blocks.get(i) == Terrain.WALL || blocks.get(i) == Terrain.MUD || blocks.get(i) == Terrain.OIL_SPILL) {
                 if (blocks.get(i) == Terrain.WALL || isCT) {
                     countObstacle += 2;
@@ -164,9 +164,9 @@ public class Bot {
 
         // Accelerate first if going too slow
         // nanti ganti lagi
-        if (myCar.speed <= 6) {
-            return ACCELERATE;
-        }
+        // if (myCar.speed <= 6) {
+        // return ACCELERATE;
+        // }
 
         Command TWEET = new TweetCommand(opponent.position.lane, opponent.position.block + opponent.speed + 1);
 
@@ -254,7 +254,7 @@ public class Bot {
                     } else if (countObstacle == countObstacleRight) {
                         if (countPowerUp < countPowerUpRight) {
                             return TURN_RIGHT;
-                        } 
+                        }
                     }
                 }
             }
@@ -277,7 +277,7 @@ public class Bot {
                     } else {
                         if (countObstacleLeft > countObstacleRight) {
                             return TURN_RIGHT;
-                        } else{
+                        } else {
                             return TURN_LEFT;
                         }
                     }
@@ -300,19 +300,21 @@ public class Bot {
                     } else if (countObstacle == countObstacleLeft) {
                         if (countPowerUp < countPowerUpLeft) {
                             return TURN_LEFT;
-                        } 
+                        }
                     }
                 }
             }
         }
 
         // Kena Oil -> speed berkurang ke state sebelumnya, skor berkurang 4, damage + 1
-        if (blocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.OIL_SPILL) || blocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.MUD)) {
+        if (blocks.subList(0, min(blocks.size(),
+                myCar.speed)).contains(Terrain.OIL_SPILL) || blocks.subList(0,
+                        min(blocks.size(), myCar.speed)).contains(Terrain.MUD)) {
             // Menghitung jumlah powerups di lane
 
             // Kasus 1 : Lane paling kiri, hanya bisa belok kanan
             if (lanepos == 1) {
-                if (!isCTRight || !rBlocks.contains(Terrain.WALL)) {
+                if (!isCTRight && !rBlocks.contains(Terrain.WALL)) {
                     if (RightBen > SelfBen) {
                         return TURN_RIGHT;
                     }
@@ -321,29 +323,34 @@ public class Bot {
             // Kasus 2 : Lane 2
             else if (lanepos == 2) {
                 // Kasus 2.1 Ada CT/Wall di kanan
-                if (isCTRight || rBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                if (isCTRight || rBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.WALL)) {
                     if (LeftBen > SelfBen) {
                         return TURN_LEFT;
                     }
                 }
                 // Kasus 2.2 Ada CT/wall di kiri
-                if (isCTLeft || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                if (isCTLeft || lBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.WALL)) {
                     // Cek kanan --> ada mud tapi gaada yang lain
                     if (RightBen > SelfBen) {
                         return TURN_RIGHT;
                     }
                 }
                 // Kasus 2.3 Ada mud di kanan
-                if (rBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.MUD)) {
+                if (rBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.MUD)) {
                     // Kasus 2.3.1 Kiri ada CT/Wall
-                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kanan karena gamungkin belok kiri
                         if (RightBen > SelfBen) {
                             return TURN_RIGHT;
                         }
                     }
                     // Kasus 2.3.2 Kanan ada CT / Wall
-                    if (isCTRight || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTRight || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kiri karena gamungkin belok kanan
                         if (LeftBen > SelfBen) {
                             return TURN_LEFT;
@@ -351,16 +358,19 @@ public class Bot {
                     }
                 }
                 // Kasus 2.4 Ada mud di kiri
-                if (lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.MUD)) {
+                if (lBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.MUD)) {
                     // Kasus 2.4.1 Kanan ada CT/Wall
-                    if (isCTRight || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTRight || rBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kiri karena gamungkin belok kanan
                         if (LeftBen > SelfBen) {
                             return TURN_LEFT;
                         }
                     }
                     // Kasus 2.4.2 Kiri ada CT/Wall
-                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kanan karena gamungkin belok kiri
                         if (RightBen > SelfBen) {
                             return TURN_RIGHT;
@@ -368,48 +378,55 @@ public class Bot {
                     }
                 }
                 // Kasus 2.5 Kanan / kiri aman
-                if (LeftBen > SelfBen) {
-                    if (LeftBen >= RightBen) {
-                        return TURN_LEFT;
-                    } else {
-                        return TURN_RIGHT;
+                if (countObstacleLeft == 0 && countObstacleRight == 0) {
+                    if (LeftBen > SelfBen) {
+                        if (LeftBen >= RightBen) {
+                            return TURN_LEFT;
+                        } else {
+                            return TURN_RIGHT;
+                        }
                     }
-                }
-                if (RightBen > SelfBen) {
-                    if (LeftBen <= RightBen) {
-                        return TURN_LEFT;
-                    } else {
-                        return TURN_RIGHT;
+                    if (RightBen > SelfBen) {
+                        if (LeftBen <= RightBen) {
+                            return TURN_LEFT;
+                        } else {
+                            return TURN_RIGHT;
+                        }
                     }
                 }
             }
             // Kasus 3 : Lane 3
             else if (lanepos == 3) {
                 // Kasus 3.1 Ada CT/wall di kiri
-                if (isCTLeft || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                if (isCTLeft || lBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.WALL)) {
                     // Cek kanan
                     if (RightBen > SelfBen) {
                         return TURN_RIGHT;
                     }
                 }
                 // Kasus 3.2 Ada CT/Wall di kanan
-                if (isCTRight || rBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                if (isCTRight || rBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.WALL)) {
                     // Cek kiri
                     if (LeftBen > SelfBen) {
                         return TURN_LEFT;
                     }
                 }
                 // Kasus 3.3 Ada mud di kiri
-                if (lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.MUD)) {
+                if (lBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.MUD)) {
                     // Kasus 3.3.1 Kanan ada CT/Wall
-                    if (isCTRight || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTRight || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kiri karena gamungkin belok kanan
                         if (LeftBen > SelfBen) {
                             return TURN_LEFT;
                         }
                     }
                     // Kasus 3.3.2 Kiri ada CT/Wall
-                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kanan karena gamungkin belok kiri
                         if (RightBen > SelfBen) {
                             return TURN_RIGHT;
@@ -419,39 +436,44 @@ public class Bot {
                 // Kasus 3.4 Ada mud di kanan
                 if (rBlocks.contains(Terrain.MUD)) {
                     // Kasus 3.4.1 Kiri ada CT/Wall
-                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTLeft || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kanan karena gamungkin belok kiri
                         if (RightBen > SelfBen) {
                             return TURN_RIGHT;
                         }
                     }
                     // Kasus 3.4.2 Kanan ada CT / Wall
-                    if (isCTRight || lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                    if (isCTRight || lBlocks.subList(0, min(blocks.size(),
+                            myCar.speed)).contains(Terrain.WALL)) {
                         // Cek kiri karena gamungkin belok kanan
-                        if (RightBen > SelfBen) {
-                            return TURN_RIGHT;
+                        if (LeftBen > SelfBen) {
+                            return TURN_LEFT;
                         }
                     }
                 }
                 // Kasus 3.5 Kanan / kiri aman
-                if (LeftBen > SelfBen) {
-                    if (LeftBen >= RightBen) {
-                        return TURN_LEFT;
-                    } else {
-                        return TURN_RIGHT;
+                if (countObstacleLeft == 0 && countObstacleRight == 0) {
+                    if (LeftBen > SelfBen) {
+                        if (LeftBen >= RightBen) {
+                            return TURN_LEFT;
+                        } else {
+                            return TURN_RIGHT;
+                        }
                     }
-                }
-                if (RightBen > SelfBen) {
-                    if (LeftBen <= RightBen) {
-                        return TURN_LEFT;
-                    } else {
-                        return TURN_RIGHT;
+                    if (RightBen > SelfBen) {
+                        if (LeftBen <= RightBen) {
+                            return TURN_LEFT;
+                        } else {
+                            return TURN_RIGHT;
+                        }
                     }
                 }
             }
             // Kasus 4 : Lane paling kanan, hanya bisa belok kiri
             else {
-                if (!isCTLeft || !lBlocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.WALL)) {
+                if (!isCTLeft && !lBlocks.subList(0, min(blocks.size(),
+                        myCar.speed)).contains(Terrain.WALL)) {
                     if (LeftBen > SelfBen) {
                         return TURN_LEFT;
                     }
@@ -459,9 +481,11 @@ public class Bot {
             }
         }
 
-        // // Kena Mud -> speed berkurang ke state sebelumnya, skor berkurang 3, damage
+        // Kena Mud -> speed berkurang ke state sebelumnya, skor berkurang 3, damage
         // + 1
-        if (blocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.MUD) || blocks.contains(Terrain.OIL_SPILL)) { // ini udah diatasin mudnya
+        if (blocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.MUD)
+                || blocks.subList(0, min(blocks.size(), myCar.speed)).contains(Terrain.OIL_SPILL)) { // ini udah
+                                                                                                     // diatasin mudnya
             // dalam jangkauan speed apa ga
             // LIZARD USE = priority 1
             if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
@@ -584,16 +608,54 @@ public class Bot {
             return OIL;
         }
 
-        /* 0 ke 3 */
-        if (myCar.speed == 0) {
+        // Cek jalur
+        if (lanepos == 1) {
+            if (countObstacleRight == countObstacle) {
+                if (RightBen >= SelfBen) {
+                    return TURN_RIGHT;
+                }
+            }
+            if (countObstacleRight == 0 && countObstacle == 0) {
+                if (countPowerUpRight > countPowerUp) {
+                    return TURN_RIGHT;
+                }
+            }
+        } else if ((lanepos == 2 || lanepos == 3) && countObstacle == 0 && countObstacleLeft == 0
+                && countObstacleRight == 0) {
+            if (countPowerUpLeft > countPowerUp) {
+                if (countPowerUpLeft > countPowerUpRight) {
+                    return TURN_LEFT;
+                } else if (countPowerUpLeft < countPowerUpRight) {
+                    return TURN_RIGHT;
+                }
+            } else if (countPowerUpLeft < countPowerUp) {
+                if (countPowerUpRight > countPowerUp) {
+                    return TURN_RIGHT;
+                }
+            }
+        } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
+            if (countObstacleLeft == countObstacle) {
+                if (LeftBen >= SelfBen) {
+                    return TURN_LEFT;
+                }
+            }
+            if (countObstacleLeft == 0 && countObstacle == 0) {
+                if (countPowerUpLeft > countPowerUp) {
+                    return TURN_LEFT;
+                }
+            }
+        }
+
+        /* 0/1 ke 3 */
+        if (myCar.speed == 0 || myCar.speed == 1) {
             if (!(blocks.subList(0, min(blocks.size(), 3)).contains(Terrain.WALL) ||
                     blocks.subList(0, min(blocks.size(), 3)).contains(Terrain.OIL_SPILL) ||
                     blocks.subList(0, min(blocks.size(), 3)).contains(Terrain.MUD))) {
                 return ACCELERATE;
             }
         }
-        /* 3 ke 6 */
-        if (myCar.speed == 3) {
+        /* 3/5 ke 6 */
+        if (myCar.speed == 3 || myCar.speed == 5) {
             if (!(blocks.subList(0, min(blocks.size(), 6)).contains(Terrain.WALL) ||
                     blocks.subList(0, min(blocks.size(), 6)).contains(Terrain.OIL_SPILL) ||
                     blocks.subList(0, min(blocks.size(), 6)).contains(Terrain.MUD))) {
