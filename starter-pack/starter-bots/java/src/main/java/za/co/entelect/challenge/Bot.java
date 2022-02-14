@@ -627,16 +627,20 @@ public class Bot {
                 if (countPowerUpRight > countPowerUp) {
                     return TURN_RIGHT;
                 }
+            } else {
+                if (LeftBen > SelfBen) {
+                    return TURN_RIGHT;
+                }
             }
-            if (LeftBen > SelfBen) {
-                return TURN_RIGHT;
-            }
-        } else if (lanepos == 3 && countObstacle == 0 && countObstacleLeft == 0) {
-            if (countPowerUpLeft > countPowerUp) {
-                return TURN_LEFT;
-            }
-            if (RightBen > SelfBen) {
-                return TURN_LEFT;
+        } else if (lanepos == 3) {
+            if (countObstacle == 0 && countObstacleLeft == 0) {
+                if (countPowerUpLeft > countPowerUp) {
+                    return TURN_LEFT;
+                }
+            } else {
+                if (RightBen > SelfBen) {
+                    return TURN_LEFT;
+                }
             }
         } else if (lanepos == 4 && countObstacleLeft == 0 && countObstacle == 0) {
             if (countObstacleLeft == 0 && countObstacle == 0) {
