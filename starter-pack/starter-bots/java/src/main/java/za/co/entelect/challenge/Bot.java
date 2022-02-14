@@ -596,7 +596,7 @@ public class Bot {
         if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
             return LIZARD;
         } else if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
-                && (blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) ||
+                && !(blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) ||
                         blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.OIL_SPILL) ||
                         blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.MUD))) {
             return BOOST;
