@@ -233,7 +233,7 @@ public class Bot {
                 if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                     return LIZARD;
                 } else {
-                    return TURN_RIGHT;
+                    return TURN_LEFT;
                 }
             }
         }
@@ -601,13 +601,13 @@ public class Bot {
                         blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.OIL_SPILL) ||
                         blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.MUD))) {
             return BOOST;
+        } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
+            return TWEET;
         } else if (hasPowerUp(PowerUps.EMP, myCar.powerups)
                 && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1
                         || opponent.position.lane == lanepos - 1)
                 && opponent.position.block > myCar.position.block) {
             return EMP;
-        } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
-            return TWEET;
         } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)) {
             return OIL;
         }
@@ -619,7 +619,7 @@ public class Bot {
                     return TURN_RIGHT;
                 }
             }
-            if (countObstacleRight == countObstacle) {
+            if (countObstacleRight == countObstacle && countObstacle != 0 && myCar.speed != 0) {
                 if (RightBen >= SelfBen) {
                     return TURN_RIGHT;
                 }
@@ -639,7 +639,7 @@ public class Bot {
                     return TURN_LEFT;
                 }
             }
-            if (countObstacleLeft == countObstacle) {
+            if (countObstacleLeft == countObstacle && countObstacle != 0 && myCar.speed != 0) {
                 if (LeftBen >= SelfBen) {
                     return TURN_LEFT;
                 }
