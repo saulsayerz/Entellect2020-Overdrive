@@ -80,6 +80,7 @@ public class Bot {
             }
         }
 
+        //TODO : Benchmark change
         // Mendeteksi CT dari tiap lane
         boolean isCT = false;
         boolean isCTLeft = false;
@@ -222,7 +223,7 @@ public class Bot {
                     }
                 }
             }
-
+/**** SEGMEN WALL *****/
             // Kena Wall -> berubah jadi speed_state_1, kena damage 2
             if (blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)) {
                 // SEGMEN LURUS , PAKAI LIZARD
@@ -253,29 +254,82 @@ public class Bot {
                 /* LANE 2 AND LANE 3 */
                 if (myCar.position.lane > 1 && myCar.position.lane < 4) {
 
-                    if (countObstacleLeft == 0) {
-                        if (countObstacleRight == 0) {
-                            if (countPowerUpLeft >= countPowerUpRight) {
-                                return TURN_LEFT;
-                            } else {
-                                return TURN_RIGHT;
+                    if (!rBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL) && !isCTRight) {
+                        if (!lBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL) && !isCTLeft) {
+                            if (!(countObstacle == countObstacleRight && countObstacle == countObstacleLeft)) {
+                                if (countObstacleLeft > countObstacleRight){
+                                    return TURN_RIGHT;
+                                } else if(countObstacleLeft < countObstacleRight){
+                                    return TURN_LEFT;
+                                } else{
+                                    if (countPowerUp < countPowerUpLeft || countPowerUp < countObstacleRight){
+                                        if (countPowerUpLeft > countPowerUpRight){
+                                            return TURN_LEFT;
+                                        } else if(countPowerUpLeft < countPowerUpRight){
+                                            return TURN_RIGHT;
+                                        }
+                                    }
+                                }
+                            }else{
+                                if (countPowerUp < countPowerUpLeft || countPowerUp < countObstacleRight){
+                                    if (countPowerUpLeft > countPowerUpRight){
+                                        return TURN_LEFT;
+                                    } else if(countPowerUpLeft < countPowerUpRight){
+                                        return TURN_RIGHT;
+                                    }
+                                }
                             }
-                        } else {
-                            return TURN_LEFT;
+                        }                    
+                    }
+
+                    /***** 2. WALL PRESENT ON RIGHT / LEFT LANE *****/
+                    if (rBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)) {
+                        if (lBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)) {
+                            if (!(countObstacle == countObstacleRight && countObstacle == countObstacleLeft)) {
+                                if (countObstacleLeft > countObstacleRight){
+                                    return TURN_RIGHT;
+                                } else if(countObstacleLeft < countObstacleRight){
+                                    return TURN_LEFT;
+                                } else{
+                                    if (countPowerUp < countPowerUpLeft || countPowerUp < countObstacleRight){
+                                        if (countPowerUpLeft > countPowerUpRight){
+                                            return TURN_LEFT;
+                                        } else if(countPowerUpLeft < countPowerUpRight){
+                                            return TURN_RIGHT;
+                                        }
+                                    }
+                                }
+                            }else{
+                                if (countPowerUp < countPowerUpLeft || countPowerUp < countObstacleRight){
+                                    if (countPowerUpLeft > countPowerUpRight){
+                                        return TURN_LEFT;
+                                    } else if(countPowerUpLeft < countPowerUpRight){
+                                        return TURN_RIGHT;
+                                    }
+                                }
+                            }
                         }
-                    } else {
-                        if (countObstacleRight == 0) {
-                            return TURN_RIGHT;
-                        } else {
-                            if (countObstacleLeft > countObstacleRight) {
-                                return TURN_RIGHT;
-                            } else {
+                        else{
+                            if (countObstacle > countObstacleLeft) {
                                 return TURN_LEFT;
+                            } else if (countObstacle == countObstacleLeft) {
+                                if (countPowerUp < countPowerUpLeft) {
+                                    return TURN_LEFT;
+                                }
+                            }
+                        } 
+                    }else{
+                        if (lBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)){
+                            if (countObstacle > countObstacleRight) {
+                                return TURN_RIGHT;
+                            } else if (countObstacle == countObstacleRight) {
+                                if (countPowerUp < countPowerUpRight) {
+                                    return TURN_RIGHT;
+                                }
                             }
                         }
                     }
                 }
-
                 /* LANE 4 */
                 if (myCar.position.lane == 4) {
                     if (!lBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL) && !isCTLeft) {
@@ -284,7 +338,7 @@ public class Bot {
                         }
                     }
 
-                    /***** 2. WALL PRESENT ON RIGHTSIDE LANE *****/
+                    /***** 2. WALL PRESENT ON LEFTSIDE LANE *****/
                     if (lBlocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL)) {
                         /* 2.1. */
                         if (countObstacle > countObstacleLeft) {
@@ -297,7 +351,7 @@ public class Bot {
                     }
                 }
             }
-
+            //TODO : Benchmark End Change
             // Kena Mud -> speed berkurang ke state sebelumnya, skor berkurang 3, damage + 1
             // Kena Oil -> speed berkurang ke state sebelumnya, skor berkurang 4, damage + 1
             if (blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.MUD)
