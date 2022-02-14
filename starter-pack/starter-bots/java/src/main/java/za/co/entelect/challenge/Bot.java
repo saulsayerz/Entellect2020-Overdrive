@@ -130,7 +130,7 @@ public class Bot {
         int countObstacleRight = 0;
         for (int i = 0; i < min(blocks.size(), myCar.speed + 1); i++) {
             if (blocks.get(i) == Terrain.WALL || blocks.get(i) == Terrain.MUD || blocks.get(i) == Terrain.OIL_SPILL) {
-                if (blocks.get(i) == Terrain.WALL || isCT) {
+                if (blocks.get(i) == Terrain.WALL) {
                     countObstacle += 2;
                 } else
                     countObstacle++;
@@ -138,19 +138,23 @@ public class Bot {
             if (rBlocks.get(i) == Terrain.WALL || rBlocks.get(i) == Terrain.MUD
                     || rBlocks.get(i) == Terrain.OIL_SPILL) {
 
-                if (rBlocks.get(i) == Terrain.WALL || isCTRight) {
+                if (rBlocks.get(i) == Terrain.WALL) {
                     countObstacleRight += 2;
                 } else
                     countObstacleRight++;
             }
             if (lBlocks.get(i) == Terrain.WALL || lBlocks.get(i) == Terrain.MUD
                     || lBlocks.get(i) == Terrain.OIL_SPILL) {
-                if (lBlocks.get(i) == Terrain.WALL || isCTLeft) {
+                if (lBlocks.get(i) == Terrain.WALL) {
                     countObstacleLeft += 2;
                 } else
                     countObstacleLeft++;
             }
         }
+
+        if (isCT) countObstacle +=2;
+        if (isCTLeft) countObstacleLeft += 2;
+        if (isCTRight) countObstacleRight += 2;
 
         // Hitung benefit dari tiap lane
         int LeftBen = countPowerUpLeft - countObstacleLeft;
