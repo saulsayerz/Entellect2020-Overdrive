@@ -170,18 +170,18 @@ public class Bot {
         
         if (myCar.state == State.USED_BOOST){
             if (lanepos==1){
-                if (countObstacleRight < countObstacle) return TURN_RIGHT;
+                if (countObstacleRight < countObstacle && !isCTRight && !rBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_RIGHT;
             }
             if (lanepos==2 || lanepos == 3){
                 if (countObstacleLeft < countObstacle){
-                    if (countObstacleRight < countObstacle) return TURN_RIGHT;
+                    if (countObstacleRight < countObstacle && !isCTRight && !rBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_RIGHT;
                 } 
                 if (countObstacleRight < countObstacle){
-                    if (countPowerUpLeft < countObstacle) return TURN_LEFT;
+                    if (countPowerUpLeft < countObstacle && !isCTLeft && !lBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_LEFT;
                 }
             }
             if (lanepos == 4){
-                if (countObstacleLeft < countObstacle) return TURN_LEFT;
+                if (countObstacleLeft < countObstacle && !isCTLeft && !lBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_LEFT;
             }
         }
 
