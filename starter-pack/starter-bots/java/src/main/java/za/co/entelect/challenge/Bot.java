@@ -3,6 +3,7 @@ package za.co.entelect.challenge;
 import za.co.entelect.challenge.command.*;
 import za.co.entelect.challenge.entities.*;
 import za.co.entelect.challenge.enums.PowerUps;
+import za.co.entelect.challenge.enums.State;
 import za.co.entelect.challenge.enums.Terrain;
 
 import java.util.*;
@@ -160,6 +161,28 @@ public class Bot {
         /** 2. MEMBENARKAN MOBIL YANG RUSAK */
         if (myCar.damage >= 2) {
             return FIX;
+        }
+
+        if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
+                && !blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) && isCT && myCar.damage < 2) {
+            return BOOST;
+        }
+        
+        if (myCar.state == State.USED_BOOST){
+            if (lanepos==1){
+                if (countObstacleRight < countObstacle) return TURN_RIGHT;
+            }
+            if (lanepos==2 || lanepos == 3){
+                if (countObstacleLeft < countObstacle){
+                    if (countObstacleRight < countObstacle) return TURN_RIGHT;
+                } 
+                if (countObstacleRight < countObstacle){
+                    if (countPowerUpLeft < countObstacle) return TURN_LEFT;
+                }
+            }
+            if (lanepos == 4){
+                if (countObstacleLeft < countObstacle) return TURN_LEFT;
+            }
         }
 
         /** 3. MENGHINDARI OBSTACLE (HANYA BERLAKU APABILA SPEED != 0) */
