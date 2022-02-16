@@ -167,9 +167,9 @@ public class Bot {
                 && !blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) && isCT && myCar.damage < 2) {
             return BOOST;
         }
-        if (hasPowerUp(PowerUps.LIZARD, myCar.powerups) && ((blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) ||
-        blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.OIL_SPILL) ||
-        blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.MUD)) || isCT)) {
+        if (hasPowerUp(PowerUps.LIZARD, myCar.powerups) && ((blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL) ||
+        blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.OIL_SPILL) ||
+        blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.MUD)) || isCT)) {
             return LIZARD;
         }
         
