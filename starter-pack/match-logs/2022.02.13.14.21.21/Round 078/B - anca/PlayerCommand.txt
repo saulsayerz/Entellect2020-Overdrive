@@ -1,3 +1,0 @@
-Command: DECELERATE
-Execution time: 22ms
-Exception: null
