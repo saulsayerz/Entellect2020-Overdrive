@@ -23,11 +23,11 @@ Untuk dapat menjalankan permainan ini, maka pastikan perangkat sudah dilengkapi 
 3.	[NodeJS](https://nodejs.org/en/download/)
 
 Permainan dapat dijalankan dengan cara :
-1. Clone repository
+1. *Clone repository
 ```
 https://github.com/saulsayerz/Tubes1_S4RaP.git
 ```
-2. Buka file yang bernama "run.bat" dan permainan akan secara otomatis berjalan. 
+2. Buka file yang bernama "run.bat" pada folder repo dan permainan akan secara otomatis berjalan. 
 3. Silahkan ganti lawan dari botnya secara manual pada game-runner-config.json (opsional).
 
 ## Compile Program
