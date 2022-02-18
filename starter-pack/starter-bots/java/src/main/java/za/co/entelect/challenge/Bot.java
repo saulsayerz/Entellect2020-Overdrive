@@ -178,6 +178,13 @@ public class Bot {
             return LIZARD;
         }
 
+        if (hasPowerUp(PowerUps.EMP, myCar.powerups)
+                && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1
+                        || opponent.position.lane == lanepos - 1)
+                && opponent.position.block > myCar.position.block) {
+            return EMP;
+        }
+
         // Mencari jalan dengan obstacle tersedikit ketika jalan menggunakan boost
         if (myCar.state == State.USED_BOOST) {
             if (lanepos == 1) {
@@ -439,12 +446,7 @@ public class Bot {
             }
 
             /** 5. MENGGUNAKAN POWERUP APABILA PUNYA */
-            if (hasPowerUp(PowerUps.EMP, myCar.powerups)
-                    && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1
-                            || opponent.position.lane == lanepos - 1)
-                    && opponent.position.block > myCar.position.block) {
-                return EMP;
-            } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
+            if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
                 return TWEET;
             } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)
                     && (opponent.position.block < myCar.position.block)) {
