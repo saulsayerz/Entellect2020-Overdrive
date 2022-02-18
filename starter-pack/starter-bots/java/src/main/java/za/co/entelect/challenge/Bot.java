@@ -41,6 +41,7 @@ public class Bot {
         // Mengambil data player & opponent
         Car myCar = gameState.player;
         Car opponent = gameState.opponent;
+
         // Inisialisasi command tweet
         Command TWEET = new TweetCommand(opponent.position.lane, opponent.position.block + opponent.speed + 1);
 
@@ -163,35 +164,48 @@ public class Bot {
             return FIX;
         }
 
+        /** 3. MENGGUNAKAN POWERUPS BOOST DAN LIZARD */
         if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
-                && !blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) && isCT && myCar.damage < 2) {
+                && !blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) && isCT && myCar.damage < 2
+                && !(myCar.state == State.USED_BOOST)) {
             return BOOST;
         }
-        if (hasPowerUp(PowerUps.LIZARD, myCar.powerups) && ((blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL) ||
-        blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.OIL_SPILL) ||
-        blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.MUD)) || isCT)) {
+
+        if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)
+                && ((blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.WALL) ||
+                        blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.OIL_SPILL) ||
+                        blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.MUD)) || isCT)) {
             return LIZARD;
         }
-        
-        if (myCar.state == State.USED_BOOST){
-            if (lanepos==1){
-                if (countObstacleRight < countObstacle && !isCTRight && !rBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_RIGHT;
+
+        // Mencari jalan dengan obstacle tersedikit ketika jalan menggunakan boost
+        if (myCar.state == State.USED_BOOST) {
+            if (lanepos == 1) {
+                if (countObstacleRight < countObstacle && !isCTRight
+                        && !rBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL))
+                    return TURN_RIGHT;
             }
-            if (lanepos==2 || lanepos == 3){
-                if (countObstacleLeft < countObstacle){
-                    if (countObstacleRight < countObstacle && !isCTRight && !rBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_RIGHT;
-                } 
-                if (countObstacleRight < countObstacle){
-                    if (countPowerUpLeft < countObstacle && !isCTLeft && !lBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_LEFT;
+            if (lanepos == 2 || lanepos == 3) {
+                if (countObstacleLeft < countObstacle) {
+                    if (countObstacleRight < countObstacle && !isCTRight
+                            && !rBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL))
+                        return TURN_RIGHT;
+                }
+                if (countObstacleRight < countObstacle) {
+                    if (countPowerUpLeft < countObstacle && !isCTLeft
+                            && !lBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL))
+                        return TURN_LEFT;
                 }
             }
-            if (lanepos == 4){
-                if (countObstacleLeft < countObstacle && !isCTLeft && !lBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL)) return TURN_LEFT;
+            if (lanepos == 4) {
+                if (countObstacleLeft < countObstacle && !isCTLeft
+                        && !lBlocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL))
+                    return TURN_LEFT;
             }
         }
 
-        /** 3. MENGHINDARI OBSTACLE (HANYA BERLAKU APABILA SPEED != 0) */
-        // Urutan Prioritas : CT, WALL , OIL, MUD
+        /** 4. MENGHINDARI OBSTACLE (HANYA BERLAKU APABILA SPEED != 0) */
+        // Urutan Prioritas : CT, WALL , OIL & MUD
         if (myCar.speed != 0) {
             // Kena CT -> berubah jadi speed_state_1, kena damage 2, stuck dibelakang CT
             if (isCT) {
@@ -330,14 +344,12 @@ public class Bot {
             // Kena Oil -> speed berkurang ke state sebelumnya, skor berkurang 4, damage + 1
             if (blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.MUD)
                     || blocks.subList(0, min(blocks.size(), myCar.speed + 1)).contains(Terrain.OIL_SPILL)) {
-                // ini udah diatasin mudnya dalam jangkauan speed apa ga
                 // LIZARD USE = priority 1
                 if (hasPowerUp(PowerUps.LIZARD, myCar.powerups)) {
                     return LIZARD;
                 }
 
                 // pindah2 lane. Kalau misal lane sebelah ada obstacles, mending nubruk mud aja
-                // / dibiarin soalnya dah paling ringan ya ga
                 boolean kiriaman = true; // dua variabel ini ngecek sebelah kiri atau kanannya jg ada obstacles apa ga
                 boolean kananaman = true;
                 if (lanepos == 1) { // kasus dia di paling atas, hanya mungkin turn right
@@ -414,9 +426,7 @@ public class Bot {
                         if (!kiriadapower && kananadapower) {
                             return TURN_RIGHT;
                         }
-                        if (kiriadapower && kananadapower) { // KASUS GINI aku asumsi ambil lane yang bukan pojok aja,
-                            // soalnya di pojokan itu membatasi gerak. Kalau di tegnah kan
-                            // enak bisa kiri/kanan
+                        if (kiriadapower && kananadapower) {
                             if (lanepos == 2) {
                                 return TURN_RIGHT;
                             }
@@ -428,27 +438,20 @@ public class Bot {
                 }
             }
 
-            // Jalur aman BISA ATAU TIDAK PERLU MENGHINDARI OBST
-
-            /** 4. MENGGUNAKAN POWERUP APABILA PUNYA */
-            if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
-                    && !(blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) ||
-                            blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.OIL_SPILL) ||
-                            blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.MUD))) {
-                return BOOST;
-            } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
-                return TWEET;
-            } else if (hasPowerUp(PowerUps.EMP, myCar.powerups)
+            /** 5. MENGGUNAKAN POWERUP APABILA PUNYA */
+            if (hasPowerUp(PowerUps.EMP, myCar.powerups)
                     && (opponent.position.lane == lanepos || opponent.position.lane == lanepos + 1
                             || opponent.position.lane == lanepos - 1)
                     && opponent.position.block > myCar.position.block) {
                 return EMP;
+            } else if (hasPowerUp(PowerUps.TWEET, myCar.powerups)) {
+                return TWEET;
             } else if (hasPowerUp(PowerUps.OIL, myCar.powerups) && (opponent.position.lane == lanepos)
                     && (opponent.position.block < myCar.position.block)) {
                 return OIL;
             }
 
-            /** 5. PINDAH JALUR (PRIORITAS TENGAH) */
+            /** 6. PINDAH JALUR (PRIORITAS TENGAH) */
             if (myCar.speed != 0) {
                 if (lanepos == 1 && countObstacleRight == countObstacle) {
                     if (countPowerUpRight > countPowerUp) {
@@ -482,7 +485,7 @@ public class Bot {
             }
         }
 
-        /** 6. MELAKUKAN AKSELERASI APABILA AMAN */
+        /** 7. MELAKUKAN AKSELERASI APABILA AMAN */
         /* 0 ke 3 */
         if (myCar.speed == 0)
             return ACCELERATE;
@@ -519,7 +522,7 @@ public class Bot {
             }
         }
 
-        /** 7. MELAKUKAN NOTHING */
+        /** 8. MELAKUKAN NOTHING */
         return NOTHING;
     }
 

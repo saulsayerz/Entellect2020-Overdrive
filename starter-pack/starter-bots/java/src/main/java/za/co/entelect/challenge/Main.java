@@ -25,8 +25,6 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Gson gson = new Gson();
         Bot bot = new Bot();
-        int totalSpeed = 0;
-        int totalRound = 0;
         while (true) {
             try {
                 int roundNumber = sc.nextInt();
@@ -35,13 +33,9 @@ public class Main {
                 String state = new String(Files.readAllBytes(Paths.get(statePath)));
 
                 GameState gameState = gson.fromJson(state, GameState.class);
-                totalSpeed += gameState.player.speed;
-                totalRound += 1;
-                float averageSpeed = totalSpeed / totalRound;
                 Command command = bot.run(gameState);
 
                 System.out.println(String.format("C;%d;%s", roundNumber, command.render()));
-                System.out.println(String.format("S; avg speed : %f", averageSpeed));
             } catch (Exception e) {
                 e.printStackTrace();
             }
