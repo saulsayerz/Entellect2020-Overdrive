@@ -32,13 +32,16 @@ starter-pack
     ```bash
     git clone https://github.com/saulsayerz/Tubes1_S4RaP.git
     ```
-4. Silahkan ganti lawan dari botnya secara manual pada `game-runner-config.json` (opsional).
+4. Silahkan ganti isi player-a pada `game-runner-config.json` menjadi `./Tubes1_S4RaP/src/`.
 5. Buka file yang bernama "run.bat" pada folder 
 starter-pack
  atau ketik perintah 
 ./run
  pada command prompt dan permainan akan secara otomatis berjalan. 
 6. Riwayat permainan akan muncul pada folder ```match-logs```. Oleh sebab itu, pastikan memori laptop anda cukup untuk mencatat riwayat permainan (kurang lebih 500mb).
+
+**NB** : APABILA TERJADI ERROR (NOTHING TERUS) PADA MATCH, SILAHKAN COPY ISI DARI `Bot.Java` PADA FOLDER Tubes1S4RaP
+UNTUK DI BUILD SENDIRI PADA `starter-bots` YANG ADA DI REPO ENTELECT.
 
 ## Compile Program
 Untuk melakukan compile program pada VS Code, maka pastikan bahwa Maven sudah terunduh dan muncul pada sisi kiri layar VS Code. Kemudian, pilih "java-starter-bots". Setelah itu klik "Lifecycle" kemudian "Compile" dan "Install". Program akan secara otomatis melakukan build.
