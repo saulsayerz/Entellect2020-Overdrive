@@ -1,0 +1,8 @@
+{
+	"author": "John Doe",
+	"email": "John.Doe@example.com",
+	"nickName": "s4Rap",
+	"botLocation": "../bin",
+	"botFileName": "S4RaP-jar-with-dependencies.jar",
+	"botLanguage": "java"
+}
