@@ -166,7 +166,7 @@ public class Bot {
 
         /** 3. MENGGUNAKAN POWERUPS BOOST DAN LIZARD */
         if (hasPowerUp(PowerUps.BOOST, myCar.powerups)
-                && !blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) && isCT && myCar.damage < 2
+                && !blocks.subList(0, min(blocks.size(), 15)).contains(Terrain.WALL) && !isCT && myCar.damage < 2
                 && !(myCar.state == State.USED_BOOST)) {
             return BOOST;
         }
