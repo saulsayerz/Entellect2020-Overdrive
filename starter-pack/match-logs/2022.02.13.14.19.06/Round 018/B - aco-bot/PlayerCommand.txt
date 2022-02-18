@@ -1,3 +1,0 @@
-Command: USE_TWEET 3 134
-Execution time: 4ms
-Exception: null
