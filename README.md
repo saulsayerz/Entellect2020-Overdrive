@@ -22,7 +22,13 @@ Untuk dapat menjalankan permainan ini, maka pastikan perangkat sudah dilengkapi 
 2.	[IDE Intellij](https://www.jetbrains.com/idea/) / [VS Code](https://code.visualstudio.com/download) + [Maven](https://maven.apache.org/download.cgi) 
 3.	[NodeJS](https://nodejs.org/en/download/)
 
-Kemudian, untuk menjalankan permainannya, tinggal membuka file yang bernama "run.bat" dan permainan akan secara otomatis berjalan. Silahkan ganti lawan dari botnya secara manual pada game-runner-config.json
+Permainan dapat dijalankan dengan cara :
+1. Clone repository
+```
+https://github.com/saulsayerz/Tubes1_S4RaP.git
+```
+2. Buka file yang bernama "run.bat" dan permainan akan secara otomatis berjalan. 
+3. Silahkan ganti lawan dari botnya secara manual pada game-runner-config.json (opsional).
 
 ## Compile Program
 Untuk melakukan compile program pada VS Code, maka pastikan bahwa Maven sudah terunduh dan muncul pada sisi kiri layar VS Code. Kemudian, pilih "java-starter-bots". Setelah itu klik "Lifecycle" kemudian "Compile" dan "Install". Program akan secara otomatis melakukan build.
